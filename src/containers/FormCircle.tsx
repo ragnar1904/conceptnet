@@ -1,15 +1,18 @@
-import React, { useContext, useState } from 'react';
+import { ConceptNetAPI } from 'api';
+import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { BaseCircle } from '../components/BaseCircle';
 import { apiContext } from '../contexts/api';
 import { formContext } from '../contexts/form';
-import { getApiData } from '../utils/api';
+// import { getApiData } from '../utils/api';
 import color from '../utils/color';
 
 export const FormCircle: React.FC = () => {
   const [value, setValue] = useState<string>("");
   const [disable, setDisable] = useState<boolean>(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const formCtx = useContext(formContext);
   const apiCtx = useContext(apiContext);
 
@@ -18,21 +21,45 @@ export const FormCircle: React.FC = () => {
     formCtx.setCurrentValue(e.target.value);
   };
 
-  const submit = async (): Promise<void> => {
-    setDisable(true);
-    setTimeout(() => setDisable(false), 1000);
-    const resJson = await getApiData(value);
-    if (resJson) {
-      apiCtx.setCurrentData(resJson);
+  // アンマウント時にfetchをキャンセルできるようにしておく
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+
+    if (!isFirstRender) {
+      const url = `http://api.conceptnet.io/c/ja/${value}`;
+      const getData = async (): Promise<ConceptNetAPI | null> =>
+        await axios
+          .get(url, {
+            cancelToken: source.token,
+          })
+          .then(res => {
+            return res.data as ConceptNetAPI;
+          })
+          .catch(err => {
+            console.log(err);
+            return null;
+          });
+      getData().then(res => apiCtx.setCurrentData(res));
+      return () => {
+        source.cancel();
+      };
     } else {
-      console.log("an error occurred");
+      setIsFirstRender(false);
     }
-  };
+  }, [disable]);
+
+  // clear timer
+  useEffect(() => {
+    if (disable === true) {
+      const timer = setTimeout(() => setDisable(false), 1000);
+      return (): void => clearTimeout(timer);
+    }
+  }, [disable]);
 
   return (
     <BaseCircle size="lg">
       <Input onChange={handleInput} />
-      <Button disabled={disable} onClick={submit}>
+      <Button disabled={disable} onClick={(): void => setDisable(true)}>
         Submit!
       </Button>
     </BaseCircle>

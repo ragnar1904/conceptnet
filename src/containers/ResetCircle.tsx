@@ -1,5 +1,5 @@
 import { NextComponentType, NextPageContext } from 'next';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { circleSize } from 'type';
 
@@ -17,9 +17,15 @@ export const ResetCircle: NextComponentType<NextPageContext, {}, Props> = props 
   const [disable, setDisable] = useState<boolean>(false);
   const apiCtx = useContext(apiContext);
 
+  useEffect(() => {
+    if (disable === true) {
+      const timer = setTimeout(() => setDisable(false), 1000);
+      return (): void => clearTimeout(timer);
+    }
+  }, [disable]);
+
   const handleClick = (): void => {
     setDisable(true);
-    setTimeout(() => setDisable(false), 1000);
     apiCtx.setCurrentData(null);
   };
 
@@ -37,8 +43,8 @@ const ResetButton = styled.button`
   border-radius: 5px;
   font-size: 1.5rem;
   padding: 0.5em 1em;
-  background-color: ${color.secondary.dark};
-  color: ${color.white};
+  background-color: ${color.white};
+  color: ${color.secondary.dark};
   border-bottom: solid 4px rgba(0, 0, 0, 0.2);
   &:disabled {
     margin-bottom: 4px;
