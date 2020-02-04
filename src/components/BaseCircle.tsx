@@ -39,16 +39,16 @@ const Circle = styled.div`
   &.lg {
     width: 200px;
     height: 200px;
-    font-size: 4rem;
+    font-size: 2rem;
   }
   &.md {
     width: 150px;
     height: 150px;
-    font-size: 3rem;
+    font-size: 1.6rem;
   }
   &.sm {
     width: 100px;
     height: 100px;
-    font-size: 2rem;
+    font-size: 1.4rem;
   }
 `;

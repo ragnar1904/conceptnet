@@ -2,19 +2,20 @@ import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 
 import { BaseCircle } from '../components/BaseCircle';
-import { alignContext } from '../contexts/align';
 import { apiContext } from '../contexts/api';
+import { formContext } from '../contexts/form';
 import { getApiData } from '../utils/api';
 import color from '../utils/color';
 
 export const FormCircle: React.FC = () => {
   const [value, setValue] = useState<string>("");
   const [disable, setDisable] = useState<boolean>(false);
-  const ctx = useContext(alignContext);
+  const formCtx = useContext(formContext);
   const apiCtx = useContext(apiContext);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
+    formCtx.setCurrentValue(e.target.value);
   };
 
   const submit = async (): Promise<void> => {
@@ -23,7 +24,6 @@ export const FormCircle: React.FC = () => {
     const resJson = await getApiData(value);
     if (resJson) {
       apiCtx.setCurrentData(resJson);
-      ctx.setCurrentAlign(true);
     } else {
       console.log("an error occurred");
     }

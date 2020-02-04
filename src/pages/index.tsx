@@ -1,14 +1,16 @@
 import { NextPage } from 'next';
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 import { LabelCircle } from '../components/LabelCircle';
 import { FormCircle } from '../containers/FormCircle';
-import { alignContext, useAlign } from '../contexts/align';
+import { ResetCircle } from '../containers/ResetCircle';
 import { apiContext, useAPI } from '../contexts/api';
+import { formContext, useForm } from '../contexts/form';
+import color from '../utils/color';
 
 const Index: NextPage = () => {
-  const ctx = useAlign();
+  const formCtx = useForm();
   const apiCtx = useAPI();
 
   const edgeData = (() => {
@@ -23,12 +25,26 @@ const Index: NextPage = () => {
     }
   })();
 
+  const ResetCircleStyle: React.CSSProperties = {
+    backgroundColor: color.secondary.dark,
+    color: color.primary,
+  };
+
   return (
-    <alignContext.Provider value={ctx}>
+    <formContext.Provider value={formCtx}>
       <apiContext.Provider value={apiCtx}>
-        <Root className={edgeData ? "align" : ""}>{edgeData ? edgeData : <FormCircle />}</Root>
+        <Root className={edgeData ? "align" : ""}>
+          {edgeData ? (
+            <React.Fragment>
+              <ResetCircle style={ResetCircleStyle} size="lg" name={formCtx.value} />
+              {edgeData}
+            </React.Fragment>
+          ) : (
+            <FormCircle />
+          )}
+        </Root>
       </apiContext.Provider>
-    </alignContext.Provider>
+    </formContext.Provider>
   );
 };
 
@@ -47,27 +63,6 @@ const Root = styled.div`
     align-items: flex-start;
     align-content: flex-start;
     flex-wrap: wrap;
-  }
-`;
-
-const rotateAnimation1 = keyframes`
-  from {
-    transform: translateX(0));
-  }
-  to {
-    transform: translateX(2000%);
-  }
-`;
-
-const EdgeArea = styled.div`
-  overflow-x: hidden;
-  grid-row: 2/3;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  & > div {
-    flex-shrink: 0;
-    /* animation: ${rotateAnimation1} 15s linear infinite; */
   }
 `;
 
