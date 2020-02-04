@@ -26,7 +26,7 @@ export const BaseCircle: NextComponentType<NextPageContext, {}, Props> = props =
 };
 
 const Circle = styled.div`
-  background: ${color.secondary.main};
+  background: ${color.secondary.light};
   color: ${color.secondary.dark};
   border-radius: 50%;
   display: flex;

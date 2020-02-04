@@ -27,7 +27,7 @@ const Index: NextPage = () => {
 
   const ResetCircleStyle: React.CSSProperties = {
     backgroundColor: color.secondary.dark,
-    color: color.primary,
+    color: color.white,
   };
 
   return (
