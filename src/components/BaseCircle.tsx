@@ -35,7 +35,11 @@ const Circle = styled.div`
   flex-direction: column;
   box-shadow: 0 0 10px 3px gray;
   word-wrap: break-word;
-
+  transition: transform 250ms ease-in-out;
+  transform: scale(1);
+  &:hover {
+    transform: scale(1.1);
+  }
   &.lg {
     width: 200px;
     height: 200px;

@@ -8,6 +8,7 @@ import { ResetCircle } from '../containers/ResetCircle';
 import { apiContext, useAPI } from '../contexts/api';
 import { formContext, useForm } from '../contexts/form';
 import color from '../utils/color';
+import { makeSentence } from '../utils/edgeSentence';
 
 const Index: NextPage = () => {
   const formCtx = useForm();
@@ -18,7 +19,8 @@ const Index: NextPage = () => {
       const circleSize = "md";
       const circleStyle: React.CSSProperties = { margin: "2rem" };
       return apiCtx.data.edges.map((item, key) => {
-        return <LabelCircle style={circleStyle} size={circleSize} name={item.start.label} key={key} />;
+        const sentence = makeSentence(item);
+        return <LabelCircle style={circleStyle} size={circleSize} name={sentence} key={key} />;
       });
     } else {
       return null;
@@ -28,6 +30,7 @@ const Index: NextPage = () => {
   const ResetCircleStyle: React.CSSProperties = {
     backgroundColor: color.secondary.dark,
     color: color.white,
+    margin: "2rem",
   };
 
   return (
@@ -36,7 +39,7 @@ const Index: NextPage = () => {
         <Root className={edgeData ? "align" : ""}>
           {edgeData ? (
             <React.Fragment>
-              <ResetCircle style={ResetCircleStyle} size="lg" name={formCtx.value} />
+              <ResetCircle style={ResetCircleStyle} size="md" name={formCtx.value} />
               {edgeData}
             </React.Fragment>
           ) : (

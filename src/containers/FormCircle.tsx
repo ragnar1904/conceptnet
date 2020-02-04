@@ -26,10 +26,15 @@ export const FormCircle: React.FC = () => {
     const source = axios.CancelToken.source();
 
     if (!isFirstRender) {
-      const url = `http://api.conceptnet.io/c/ja/${value}`;
+      const url = `http://api.conceptnet.io/query`;
       const getData = async (): Promise<ConceptNetAPI | null> =>
         await axios
           .get(url, {
+            params: {
+              limit: 100,
+              node: `/c/ja/${value}`,
+              other: `/c/ja`,
+            },
             cancelToken: source.token,
           })
           .then(res => {
